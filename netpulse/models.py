@@ -369,8 +369,11 @@ def save_models(
     
     # Update current symlink
     current_dir = Path.home() / ".netpulse" / "models" / "current"
-    if current_dir.exists() or current_dir.is_symlink():
+    if current_dir.is_symlink():
         current_dir.unlink()
+    elif current_dir.exists():
+        import shutil
+        shutil.rmtree(current_dir)
     current_dir.symlink_to(model_dir)
     
     print(f"Models saved to {model_dir}")
@@ -390,15 +393,18 @@ def load_models(model_dir: Optional[Path] = None) -> Tuple:
     if_path = model_dir / "isolation_forest.pkl"
     isolation_forest = joblib.load(if_path)
     
-    # Load Autoencoder
-    ae_path = model_dir / "autoencoder.pt"
-    autoencoder = Autoencoder()
-    autoencoder.load_state_dict(torch.load(ae_path))
-    autoencoder.eval()
-    
-    # Load metadata
+    # Load metadata first to get model dimensions
     meta_path = model_dir / "model_meta.json"
     with open(meta_path, "r") as f:
         meta = json.load(f)
+    
+    # Load Autoencoder - determine input_dim from saved state dict
+    ae_path = model_dir / "autoencoder.pt"
+    state_dict = torch.load(ae_path)
+    # Get input dimension from the first layer's weight shape
+    input_dim = state_dict["encoder.0.weight"].shape[1]
+    autoencoder = Autoencoder(input_dim=input_dim)
+    autoencoder.load_state_dict(state_dict)
+    autoencoder.eval()
     
     return isolation_forest, autoencoder, meta

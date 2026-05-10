@@ -12,7 +12,7 @@ from sklearn.preprocessing import MinMaxScaler
 import joblib
 
 
-# Feature names in order
+# Feature names in order (18 features total)
 FEATURE_NAMES = [
     "flow_duration_ms",
     "total_forward_bytes",
@@ -113,7 +113,7 @@ def extract_flow_features(df: pd.DataFrame, port_entropy_map: Optional[dict] = N
             # Destination port (normalized to [0, 1] by dividing by max port 65535)
             "dst_port_normalized": row.get("dst_port", 0) / 65535.0,
             
-            # Protocol one-hot encoding
+            # Protocol one-hot encoding (TCP=1,0,0; UDP=0,1,0; ICMP=0,0,1)
             "protocol_tcp": 1.0 if row.get("protocol", "") == "TCP" else 0.0,
             "protocol_udp": 1.0 if row.get("protocol", "") == "UDP" else 0.0,
             "protocol_icmp": 1.0 if row.get("protocol", "") == "ICMP" else 0.0,

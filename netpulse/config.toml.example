@@ -1,0 +1,49 @@
+# NetPulse Configuration File
+# Copy this file to ~/.netpulse/config.toml and customize as needed
+
+[general]
+# Primary network interface for monitoring (auto-detect if not specified)
+interface = "auto"
+
+# Scoring window in seconds
+scoring_window = 30
+
+# Ring buffer duration in minutes
+buffer_duration = 5
+
+[models]
+# Anomaly score threshold (combined score above this triggers alert)
+threshold = 1.0
+
+# Isolation Forest contamination parameter
+contamination = 0.01
+
+# Autoencoder bottleneck size
+bottleneck_size = 8
+
+[alerts]
+# Enable SQLite alert storage
+enabled = true
+
+# Alert database path
+db_path = "~/.netpulse/alerts.db"
+
+# Optional webhook URL for real-time notifications
+webhook_url = ""
+
+[retraining]
+# Enable nightly retraining
+enabled = true
+
+# Retraining schedule (cron format)
+schedule = "0 2 * * *"
+
+# Minimum F1 score to accept new model (relative to current)
+min_f1_ratio = 0.95
+
+[logging]
+# Log level: DEBUG, INFO, WARNING, ERROR
+level = "INFO"
+
+# Log file path
+path = "~/.netpulse/netpulse.log"
