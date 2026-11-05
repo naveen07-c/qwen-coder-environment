@@ -1,0 +1,8 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+models/*.joblib
+.pytest_cache/
+.coverage
